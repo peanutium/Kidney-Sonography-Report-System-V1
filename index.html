@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kidney Sonography Report System</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --bg1: #f8fafc;
+      --bg2: #e2e8f0;
+      --card: rgba(255, 255, 255, 0.92);
+      --border: #e5e7eb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --soft: #f1f5f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(to bottom, var(--bg1), var(--bg2));
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    header { margin-bottom: 24px; }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .grid-main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .stack { display: grid; gap: 16px; }
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+    }
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      color: #374151;
+    }
+    .field-title {
+      font-weight: 650;
+      margin-bottom: 6px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 15px;
+      background: #fff;
+      outline: none;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+    }
+    .hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .inline-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    .inline-label {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .select-label {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .select-label select {
+      width: auto;
+      min-width: 120px;
+      padding: 7px 10px;
+    }
+    .lesion-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .lesion-title {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+    pre {
+      margin: 0;
+      min-height: 110px;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.55;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border-color: #cbd5e1;
+    }
+    .btn-secondary:hover { background: #f8fafc; }
+    .btn-reset {
+      background: #f3f4f6;
+      color: var(--text);
+      border-color: #d1d5db;
+    }
+    .btn-reset:hover { background: #e5e7eb; }
+    .notes {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .notes ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .notes li { margin: 4px 0; }
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media (max-width: 900px) {
+      .grid-main { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .lesion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <h1>Kidney Sonography Report System</h1>
+      <p class="subtitle">Pure HTML/JavaScript version. No React, no Babel, no Tailwind, no build step. Directly deployable on GitHub Pages.</p>
+    </header>
+
+    <div class="grid-main">
+      <div class="stack">
+        <section class="section">
+          <h2>Kidney Measurements</h2>
+          <div class="two-col">
+            <label>
+              <div class="field-title">Right kidney</div>
+              <input id="rkSize" type="text" inputmode="text" placeholder="e.g., 10.6 x 4.2 cm">
+              <div class="hint">Input examples: 10.6 x 4.2 cm, 10.6x4.2cm, 10.6 × 4.2. Output: 10.6x4.2cm.</div>
+            </label>
+            <label>
+              <div class="field-title">Left kidney</div>
+              <input id="lkSize" type="text" inputmode="text" placeholder="e.g., 10.2 x 4.0 cm">
+              <div class="hint">Free-text input is allowed; decimals such as 7.53 are supported.</div>
+            </label>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Parenchymal Features</h2>
+          <div class="inline-options">
+            <label class="inline-label">
+              <input id="prominentSinus" type="checkbox" checked>
+              <span>Prominent renal sinus</span>
+            </label>
+
+            <label class="select-label">
+              <span>Cortex thickness</span>
+              <select id="cortexThickness">
+                <option value="normal">normal</option>
+                <option value="thinning">thinning</option>
+              </select>
+            </label>
+
+            <label class="select-label">
+              <span>Echogenicity</span>
+              <select id="echogenicity">
+                <option value="normal">normal</option>
+                <option value="increased">increased</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Lesions</h2>
+          <div class="two-col">
+            <div>
+              <div class="lesion-title">Right kidney hypoechoic lesions (cysts)</div>
+              <div id="rkHypo" class="lesion-grid"></div>
+            </div>
+            <div>
+              <div class="lesion-title">Right kidney HYPERechoic lesions (stones)</div>
+              <div id="rkHyper" class="lesion-grid"></div>
+            </div>
+            <div>
+              <div class="lesion-title">Left kidney hypoechoic lesions (cysts)</div>
+              <div id="lkHypo" class="lesion-grid"></div>
+            </div>
+            <div>
+              <div class="lesion-title">Left kidney HYPERechoic lesions (stones)</div>
+              <div id="lkHyper" class="lesion-grid"></div>
+            </div>
+          </div>
+          <div class="hint">Leave blank if none. Values like 5.6, 5.7, and 6.5 will be reported as “5.6cm, 5.7cm, and 6.5cm”.</div>
+        </section>
+
+        <button class="btn-reset" type="button" onclick="resetAll()">Reset</button>
+      </div>
+
+      <div class="stack">
+        <section class="section">
+          <h2>Sonographic findings</h2>
+          <pre id="findingsOutput"></pre>
+          <div class="button-row">
+            <button class="btn-primary" type="button" onclick="copyText('findingsOutput')">Copy findings</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Impression</h2>
+          <pre id="impressionOutput"></pre>
+          <div class="button-row">
+            <button class="btn-primary" type="button" onclick="copyText('impressionOutput')">Copy impression</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Full report</h2>
+          <div class="button-row">
+            <button class="btn-primary" type="button" onclick="copyFullReport()">Copy full report</button>
+            <button class="btn-secondary" type="button" onclick="downloadFullReport()">Download .txt</button>
+          </div>
+        </section>
+
+        <section class="section notes">
+          <ul>
+            <li>Counts are capitalized words: One, Two, Three, etc.</li>
+            <li>Diameters are comma-separated with “, and” before the final value.</li>
+            <li>This version avoids the “Cannot use import statement outside a module” error.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <footer>© <span id="year"></span> Kidney Sonography Report System</footer>
+  </main>
+
+  <script>
+    const lesionGroups = ["rkHypo", "rkHyper", "lkHypo", "lkHyper"];
+
+    function createLesionInputs() {
+      lesionGroups.forEach(groupId => {
+        const group = document.getElementById(groupId);
+        group.innerHTML = "";
+        for (let i = 0; i < 7; i++) {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.inputMode = "decimal";
+          input.placeholder = "#" + (i + 1);
+          input.dataset.group = groupId;
+          input.addEventListener("input", updateReport);
+          group.appendChild(input);
+        }
+      });
+    }
+
+    function parseNumber(value) {
+      if (!value) return null;
+      const match = String(value).replace(/,/g, ".").match(/\d*\.?\d+/);
+      if (!match) return null;
+      const num = parseFloat(match[0]);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function getLesionNumbers(groupId) {
+      return Array.from(document.querySelectorAll("#" + groupId + " input"))
+        .map(input => parseNumber(input.value))
+        .filter(value => value !== null);
+    }
+
+    function pluralize(word, count) {
+      return count === 1 ? word : word + "s";
+    }
+
+    function countWord(n) {
+      const words = [
+        "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+        "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen",
+        "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"
+      ];
+      return (n >= 0 && n < words.length) ? words[n] : String(n);
+    }
+
+    function joinDiameters(nums) {
+      const formatted = nums.map(n => String(n) + "cm");
+      if (formatted.length === 0) return "";
+      if (formatted.length === 1) return formatted[0];
+      if (formatted.length === 2) return formatted[0] + " and " + formatted[1];
+      return formatted.slice(0, -1).join(", ") + ", and " + formatted[formatted.length - 1];
+    }
+
+    function normalizeKidneySize(raw) {
+      if (!raw || !raw.trim()) return "";
+      const withoutCm = raw.replace(/cm/gi, "").trim();
+      const match = withoutCm.match(/(\d*\.?\d+)\s*[x×]\s*(\d*\.?\d+)/i);
+      if (match) return match[1] + "x" + match[2] + "cm";
+      return withoutCm ? withoutCm + "cm" : "";
+    }
+
+    function updateReport() {
+      const rkSize = normalizeKidneySize(document.getElementById("rkSize").value);
+      const lkSize = normalizeKidneySize(document.getElementById("lkSize").value);
+      const prominentSinus = document.getElementById("prominentSinus").checked;
+      const cortexThickness = document.getElementById("cortexThickness").value;
+      const echogenicity = document.getElementById("echogenicity").value;
+
+      const rkHypo = getLesionNumbers("rkHypo");
+      const rkHyper = getLesionNumbers("rkHyper");
+      const lkHypo = getLesionNumbers("lkHypo");
+      const lkHyper = getLesionNumbers("lkHyper");
+
+      const rkHypoCount = rkHypo.length;
+      const rkHyperCount = rkHyper.length;
+      const lkHypoCount = lkHypo.length;
+      const lkHyperCount = lkHyper.length;
+
+      const anyStone = rkHyperCount + lkHyperCount > 0;
+      const anyCyst = rkHypoCount + lkHypoCount > 0;
+
+      const findings = [];
+
+      findings.push("- The right kidney measures " + rkSize + (rkSize ? "," : "") + " and the left " + lkSize + ".");
+
+      findings.push(
+        "- " +
+        (prominentSinus ? "Prominent renal sinus; " : "") +
+        cortexThickness +
+        " cortex thickness with " +
+        echogenicity +
+        " echogenicity of both kidneys."
+      );
+
+      if (rkHypoCount > 0) {
+        findings.push(
+          "- " + countWord(rkHypoCount) + " hypoechoic " + pluralize("lesion", rkHypoCount) +
+          " at right kidney, diameter " + joinDiameters(rkHypo) +
+          ", right renal " + pluralize("cyst", rkHypoCount) + "."
+        );
+      }
+
+      if (rkHyperCount > 0) {
+        findings.push(
+          "- " + countWord(rkHyperCount) + " hyperechoic " + pluralize("lesion", rkHyperCount) +
+          " at right kidney, diameter " + joinDiameters(rkHyper) +
+          ", right renal " + pluralize("stone", rkHyperCount) + "."
+        );
+      }
+
+      if (lkHypoCount > 0) {
+        findings.push(
+          "- " + countWord(lkHypoCount) + " hypoechoic " + pluralize("lesion", lkHypoCount) +
+          " at left kidney, diameter " + joinDiameters(lkHypo) +
+          ", left renal " + pluralize("cyst", lkHypoCount) + "."
+        );
+      }
+
+      if (lkHyperCount > 0) {
+        findings.push(
+          "- " + countWord(lkHyperCount) + " hyperechoic " + pluralize("lesion", lkHyperCount) +
+          " at left kidney, diameter " + joinDiameters(lkHyper) +
+          ", left renal " + pluralize("stone", lkHyperCount) + "."
+        );
+      }
+
+      if (!anyStone) findings.push("- No renal stone or hydronephrosis.");
+      if (!anyCyst) findings.push("- No cystic or mass lesion.");
+
+      const impression = [];
+      const normalParenchyma = cortexThickness === "normal" && echogenicity === "normal";
+      const noLesions = !anyStone && !anyCyst;
+
+      if (normalParenchyma && noLesions) {
+        impression.push("Unremarkable renal sonography");
+      }
+
+      if (echogenicity === "increased") {
+        impression.push("Chronic renal parenchymal disease of both kidneys");
+      }
+
+      if (rkHypoCount > 0) impression.push("Right renal " + pluralize("cyst", rkHypoCount));
+      if (rkHyperCount > 0) impression.push("Right renal " + pluralize("stone", rkHyperCount));
+      if (lkHypoCount > 0) impression.push("Left renal " + pluralize("cyst", lkHypoCount));
+      if (lkHyperCount > 0) impression.push("Left renal " + pluralize("stone", lkHyperCount));
+
+      document.getElementById("findingsOutput").textContent = findings.join("\n");
+      document.getElementById("impressionOutput").textContent = impression.join("\n");
+    }
+
+    function fullReportText() {
+      return "Sonographic findings:\n" +
+        document.getElementById("findingsOutput").textContent +
+        "\n\nImpression:\n" +
+        document.getElementById("impressionOutput").textContent;
+    }
+
+    async function copyText(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied to clipboard!");
+      } catch (err) {
+        alert("Copy failed. Please select and copy manually.");
+      }
+    }
+
+    async function copyFullReport() {
+      try {
+        await navigator.clipboard.writeText(fullReportText());
+        alert("Copied to clipboard!");
+      } catch (err) {
+        alert("Copy failed. Please select and copy manually.");
+      }
+    }
+
+    function downloadFullReport() {
+      const blob = new Blob([fullReportText()], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "kidney_sonography_report.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function resetAll() {
+      document.getElementById("rkSize").value = "";
+      document.getElementById("lkSize").value = "";
+      document.getElementById("prominentSinus").checked = true;
+      document.getElementById("cortexThickness").value = "normal";
+      document.getElementById("echogenicity").value = "normal";
+
+      lesionGroups.forEach(groupId => {
+        document.querySelectorAll("#" + groupId + " input").forEach(input => {
+          input.value = "";
+        });
+      });
+
+      updateReport();
+    }
+
+    function initialize() {
+      createLesionInputs();
+
+      ["rkSize", "lkSize", "prominentSinus", "cortexThickness", "echogenicity"].forEach(id => {
+        document.getElementById(id).addEventListener("input", updateReport);
+        document.getElementById(id).addEventListener("change", updateReport);
+      });
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+      updateReport();
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
